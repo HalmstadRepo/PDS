@@ -29,7 +29,9 @@ public class FileService {
 	@POST
     @Path("/user/create/{clientId}")
     public Response createUser(@PathParam("clientId") long clientId) {
-		clientMap.put(clientId, new ClientData());
+		if (!clientMap.containsKey(clientId)) {
+			clientMap.put(clientId, new ClientData());
+		}
 		
 		return Response
 				.ok("User created!", MediaType.APPLICATION_JSON)

@@ -42,7 +42,7 @@ public class FileClient {
 	
 	private void run() {
 		// Create user on server
-		//createUser(clientId);
+		createUser(clientId);
 		
 		// Gather files that need backup
 		String[] files = gatherFilesInFolder(pathFolder); 
