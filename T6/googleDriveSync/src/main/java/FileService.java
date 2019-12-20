@@ -1,8 +1,15 @@
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileService {
 
@@ -46,7 +53,7 @@ public class FileService {
         if (directory == null) {
             return null;
         }
-        String[] filePaths = directory.list();
+        String[] filePaths = getFiles(directory.getAbsolutePath());
         if (filePaths == null) {
             return null;
         }
@@ -56,9 +63,22 @@ public class FileService {
         for (int i = 0; i < filePaths.length; i++) {
             // create new file from filepath
             String f = filePaths[i];
-            String path = String.format("%s/%s",directory.getAbsolutePath(), f);
-            files[i] = new File(path);
+            files[i] = new File(f);
         }
         return files;
+    }
+
+    // Gather files from directory
+    private String[] getFiles(String directory) {
+        try (Stream<Path> walk = Files.walk(Paths.get(directory))) {
+            return walk
+                    .filter(Files::isRegularFile)
+                    .map(Path::toString)
+                    .toArray(String[]::new);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

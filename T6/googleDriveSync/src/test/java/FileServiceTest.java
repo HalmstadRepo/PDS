@@ -19,7 +19,7 @@ public class FileServiceTest {
         var files = fileService.gatherFilesInDirectory(folder);
         Assert.assertNotEquals(0, files.length);
 
-        String checksum = "";
+        String checksum;
         for (File file : files) {
             checksum = "";
             try {

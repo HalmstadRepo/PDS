@@ -1,10 +1,16 @@
 package sync;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -97,7 +103,7 @@ public class FileClient {
 		for (String file : files) {
 			FileData fileData = new FileData(file);
 			try {
-				String path = folder + file;
+				String path = file;
 				String checksum = FileUtility.getMD5Checksum(path);
 				fileData.setChecksum(checksum);
 				fileDatas.add(fileData);
@@ -135,10 +141,16 @@ public class FileClient {
 	
 	// Gather files from directory
 	private String[] gatherFilesInFolder(String directory) {
-		File fileDirectory = new File(pathFolder);
-		String[] files = fileDirectory.list();
-	
-		return files;
+		try (Stream<Path> walk = Files.walk(Paths.get(directory))) {
+            return walk
+                    .filter(Files::isRegularFile)
+                    .map(Path::toString).toArray(String[]::new);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	// Create user with id on server

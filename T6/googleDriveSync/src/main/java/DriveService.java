@@ -62,7 +62,8 @@ public class DriveService {
                 needBackup = true;
             } else try {
                 // check if checksum differs
-                String checksumLocal = FileService.getMD5Checksum(file.getAbsolutePath());
+                String s = file.getAbsolutePath();
+                String checksumLocal = FileService.getMD5Checksum(s);
                 String checksumDrive = fileDrive.getMd5Checksum();
                 if (!checksumDrive.equals(checksumLocal)) {
                     needBackup = true;
